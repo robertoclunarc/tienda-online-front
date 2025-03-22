@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ProductosService } from '../services/productos.service';
 import { CategoriasService } from '../services/categorias.service';
 import { Producto, Categoria } from '../types';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { toast } from 'react-toastify';
+import api from '../services/api';
 
 const HomePage: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Producto[]>([]);
@@ -12,6 +15,8 @@ const HomePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const { addToCart } = useCart();
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Datos del carrusel
@@ -110,6 +115,34 @@ const HomePage: React.FC = () => {
   // Ir al siguiente slide
   const nextSlide = () => {
     setActiveSlide((prev) => (prev + 1) % sliderData.length);
+  };
+
+  const addToWishlist = async (productId: number) => {
+    if (!isAuthenticated) {
+      // Si no está autenticado, redirigir al login
+      toast.info('Por favor inicia sesión para añadir productos a tus favoritos');
+      navigate('/login', { state: { from: { pathname: '/' } } });
+      return;
+    }
+
+    try {
+      // Añadir producto a la lista de deseos
+      await api.post('/listadeseos', {
+        fkCuentaUser: user?.idCuentaUser,
+        fkProducto: productId
+      });
+      
+      toast.success('Producto añadido a tu lista de deseos');
+    } catch (error) {
+      console.error('Error al añadir a lista de deseos:', error);
+      
+      // Verificar si el error es porque el producto ya está en la lista
+      if ((error as any)?.response?.data?.message?.includes('ya está en la lista de deseos')) {
+        toast.info('Este producto ya está en tu lista de deseos');
+      } else {
+        toast.error('No se pudo añadir a la lista de deseos');
+      }
+    }
   };
 
   return (
@@ -298,8 +331,22 @@ const HomePage: React.FC = () => {
                       <span className="text-4xl text-gray-300">{product.nombreProducto.charAt(0)}</span>
                     </div>
                     <div className="p-4">
+                      
+                      <div className="flex justify-between items-start mb-1">
+                        <div className="text-sm text-gray-500 mb-2">{product.nombreCategoria}</div>
+                        {/* Botón de lista de deseos */}
+                        <button 
+                            onClick={(e) => {
+                              e.preventDefault(); // Prevenir la navegación del Link
+                              addToWishlist(product.idProducto);
+                            }}
+                            className="text-gray-400 hover:text-[#e6007e] transition-colors"
+                            aria-label="Añadir a favoritos"
+                          >
+                            <i className="fas fa-heart"></i>
+                        </button>
+                      </div>
                       <h3 className="font-medium text-lg mb-1 line-clamp-2">{product.nombreProducto}</h3>
-                      <div className="text-sm text-gray-500 mb-2">{product.nombreCategoria}</div>
                       <div className="font-bold text-xl text-[#e6007e]">${parseFloat(product.precio).toFixed(2)}</div>
                     </div>
                   </Link>
