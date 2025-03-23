@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import api from '../services/api';
+
+interface ProfilePageProps {
+  activeTab?: 'profile' | 'orders' | 'password' | 'settings';
+}
 
 interface UserFormData {
   nombreUser: string;
@@ -19,9 +24,10 @@ interface Order {
   estatusVenta: string;
 }
 
-const ProfilePage: React.FC = () => {
+const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
   const { user, loading: authLoading, updateProfile } = useAuth();
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'settings'>('profile');
+  const [currentTab, setCurrentTab] = useState<'profile' | 'orders' | 'password' | 'settings'>(activeTab);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<UserFormData>({
     nombreUser: '',
     emailUser: '',
@@ -30,6 +36,26 @@ const ProfilePage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
+
+  // Actualizar la pestaña activa cuando cambia la prop
+  useEffect(() => {
+    setCurrentTab(activeTab);
+  }, [activeTab]);
+
+  // Formulario para cambio de contraseña
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+  
+  const [submittingPassword, setSubmittingPassword] = useState(false);
+
+  // Manejar cambios en el formulario de contraseña
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setPasswordForm(prev => ({ ...prev, [name]: value }));
+  };
 
   // Cargar datos del usuario cuando esté disponible
   useEffect(() => {
@@ -93,39 +119,45 @@ const ProfilePage: React.FC = () => {
   };
 
   // Manejar envío del formulario de cambio de contraseña
+  // Manejar envío del formulario de cambio de contraseña
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validar que las contraseñas coincidan
-    if (formData.newPassword !== formData.confirmPassword) {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       toast.error('Las contraseñas no coinciden');
       return;
     }
     
     try {
-      setSubmitting(true);
+      setSubmittingPassword(true);
       
-      // Llamar a la API para cambiar la contraseña
       await api.post('/auth/change-password', {
         userId: user?.idCuentaUser,
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword,
+        currentPassword: passwordForm.currentPassword,
+        newPassword: passwordForm.newPassword
       });
       
-      // Limpiar los campos de contraseña
-      setFormData(prev => ({
-        ...prev,
+      // Limpiar el formulario
+      setPasswordForm({
         currentPassword: '',
         newPassword: '',
-        confirmPassword: '',
-      }));
+        confirmPassword: ''
+      });
       
       toast.success('Contraseña actualizada correctamente');
-    } catch (error) {
+      
+      // Opcional: redirigir al perfil general
+      navigate('/perfil');
+    } catch (error: any) {
+      if (error.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Error al cambiar la contraseña');
+      }
       console.error('Error al cambiar la contraseña:', error);
-      toast.error('Error al cambiar la contraseña');
     } finally {
-      setSubmitting(false);
+      setSubmittingPassword(false);
     }
   };
 
@@ -146,7 +178,7 @@ const ProfilePage: React.FC = () => {
         </div>
       </div>
     );
-  }
+  }  
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -158,8 +190,8 @@ const ProfilePage: React.FC = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
-                <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-lg">
-                  {user.nombreUser?.[0] || user.emailUser[0]}
+              <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-lg">
+                  {user?.nombreUser?.[0] || user?.emailUser?.[0] || 'U'}
                 </div>
                 <div className="ml-4">
                   <p className="font-medium text-gray-900 dark:text-white">{user.nombreUser || 'Usuario'}</p>
@@ -170,10 +202,10 @@ const ProfilePage: React.FC = () => {
             <nav className="p-4">
               <ul className="space-y-2">
                 <li>
-                  <button
-                    onClick={() => setActiveTab('profile')}
+                <button
+                    onClick={() => setCurrentTab('profile')}
                     className={`w-full text-left px-4 py-2 rounded-md ${
-                      activeTab === 'profile' 
+                      currentTab === 'profile' 
                         ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400' 
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
@@ -184,9 +216,22 @@ const ProfilePage: React.FC = () => {
                 </li>
                 <li>
                   <button
-                    onClick={() => setActiveTab('orders')}
+                    onClick={() => setCurrentTab('password')}
                     className={`w-full text-left px-4 py-2 rounded-md ${
-                      activeTab === 'orders' 
+                      currentTab === 'password' 
+                        ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400' 
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                  >
+                    <i className="fas fa-key mr-2"></i>
+                    Cambiar Contraseña
+                  </button>
+                </li>
+                <li>
+                <button
+                    onClick={() => setCurrentTab('orders')}
+                    className={`w-full text-left px-4 py-2 rounded-md ${
+                      currentTab === 'orders' 
                         ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400' 
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
@@ -196,10 +241,10 @@ const ProfilePage: React.FC = () => {
                   </button>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setActiveTab('settings')}
+                <button
+                    onClick={() => setCurrentTab('settings')}
                     className={`w-full text-left px-4 py-2 rounded-md ${
-                      activeTab === 'settings' 
+                      currentTab === 'settings' 
                         ? 'bg-primary-50 dark:bg-primary-900 text-primary-600 dark:text-primary-400' 
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
@@ -359,8 +404,8 @@ const ProfilePage: React.FC = () => {
               </div>
             )}
 
-            {/* Configuración */}
-            {activeTab === 'settings' && (
+            {/* Cambiar Contraseña */}
+            {currentTab === 'password' && (
               <div>
                 <h2 className="text-xl font-bold mb-6">Cambiar Contraseña</h2>
                 <form onSubmit={handlePasswordSubmit}>
@@ -373,8 +418,8 @@ const ProfilePage: React.FC = () => {
                         type="password"
                         id="currentPassword"
                         name="currentPassword"
-                        value={formData.currentPassword || ''}
-                        onChange={handleChange}
+                        value={passwordForm.currentPassword}
+                        onChange={handlePasswordChange}
                         required
                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                       />
@@ -387,11 +432,13 @@ const ProfilePage: React.FC = () => {
                         type="password"
                         id="newPassword"
                         name="newPassword"
-                        value={formData.newPassword || ''}
-                        onChange={handleChange}
+                        value={passwordForm.newPassword}
+                        onChange={handlePasswordChange}
                         required
+                        minLength={6}
                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                       />
+                      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Mínimo 6 caracteres</p>
                     </div>
                     <div>
                       <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -401,28 +448,40 @@ const ProfilePage: React.FC = () => {
                         type="password"
                         id="confirmPassword"
                         name="confirmPassword"
-                        value={formData.confirmPassword || ''}
-                        onChange={handleChange}
+                        value={passwordForm.confirmPassword}
+                        onChange={handlePasswordChange}
                         required
+                        minLength={6}
                         className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:text-white"
                       />
                     </div>
                   </div>
                   <button
                     type="submit"
-                    disabled={submitting}
+                    disabled={submittingPassword}
                     className="py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-md transition duration-300 flex items-center"
                   >
-                    {submitting ? (
+                    {submittingPassword ? (
                       <>
                         <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
                         Cambiando...
                       </>
                     ) : (
-                      'Cambiar contraseña'
+                      <>
+                        <i className="fas fa-key mr-2"></i>
+                        Cambiar contraseña
+                      </>
                     )}
                   </button>
                 </form>
+              </div>
+            )}
+
+            {/* Configuración */}
+            {activeTab === 'settings' && (
+              <div>
+                <h2 className="text-xl font-bold mb-6">Configuración</h2>
+                
               </div>
             )}
           </div>

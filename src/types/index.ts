@@ -1,6 +1,6 @@
 // Interfaces de productos
 export interface Producto {
-    idProducto: number;
+    idProducto?: number;
     nombreProducto: string;
     descProducto: string | null;
     precio: string;
@@ -56,6 +56,7 @@ export interface Producto {
     emailUser: string;
     tlfUser: string | null;
     estatus: string;
+    roleUser: string;
   }
   
   // Interfaces de carrito
@@ -80,4 +81,13 @@ export interface Producto {
     nombreProducto?: string;
     precio?: string;
     nombreCategoria?: string;
+  }
+
+  export interface ProductoImagen {
+    idImagen?: number;
+    descImagen?: string;
+    imagen: string;
+    miniatura?: number; // 1 o 0 para true o false
+    principal?: number; // 1 o 0 para true o false
+    fkProducto: number;
   }

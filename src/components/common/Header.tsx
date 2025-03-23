@@ -10,6 +10,7 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [wishlistCount, setWishlistCount] = useState(0);
+  const [showUserMenu, setShowUserMenu] = useState(false);
 
   // Obtener conteo de lista de deseos
   useEffect(() => {
@@ -29,12 +30,34 @@ const Header: React.FC = () => {
     fetchWishlistCount();
   }, [isAuthenticated, user]);
 
+  // Cerrar el menú cuando se hace clic fuera de él
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.user-menu-container') && showUserMenu) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       navigate(`/productos?buscar=${encodeURIComponent(searchTerm)}`);
     }
   };
+
+  const handleLogout = () => {
+    logout();
+    setShowUserMenu(false);
+    navigate('/');
+  };
+  
 
   return (
     <header>
@@ -45,10 +68,54 @@ const Header: React.FC = () => {
             <Link to="/" className="text-white hover:text-white/80">Tienda Online</Link>
             <Link to="/soluciones-corporativas" className="text-white hover:text-white/80">Soluciones Corporativas</Link>
           </div>
-          <div className="flex space-x-4">
-            <Link to="/login" className="text-white hover:text-white/80">
-              {isAuthenticated ? user?.nombreUser || 'Mi Cuenta' : 'Identificarse'}
-            </Link>
+          <div className="flex space-x-4 items-center">
+            {isAuthenticated ? (
+              // Contenedor del menú de usuario
+              <div className="user-menu-container relative">
+                <button 
+                  onClick={() => setShowUserMenu(!showUserMenu)}
+                  className="text-white hover:text-white/80 flex items-center"
+                >
+                  <span>{user?.nombreUser || 'Usuario'}</span>
+                  <i className={`fas fa-chevron-${showUserMenu ? 'up' : 'down'} ml-1`}></i>
+                </button>
+                
+                {/* Menú desplegable de usuario */}
+                {showUserMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
+                    <div className="py-1">
+                      <Link 
+                        to="/perfil" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <i className="fas fa-user-edit mr-2"></i>
+                        Editar Perfil
+                      </Link>
+                      <Link 
+                        to="/perfil/password" 
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <i className="fas fa-key mr-2"></i>
+                        Cambiar Clave
+                      </Link>
+                      <button 
+                        onClick={handleLogout}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <i className="fas fa-sign-out-alt mr-2"></i>
+                        Cerrar Sesión
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link to="/login" className="text-white hover:text-white/80">
+                Identificarse
+              </Link>
+            )}
             <Link to="/contacto" className="text-white hover:text-white/80">Contáctenos</Link>
           </div>
         </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ProductosService } from '../services/productos.service';
-import { Producto } from '../types';
+import { ProductosImagenesService } from '../services/productosImagenes.service';
+import { Producto, ProductoImagen } from '../types';
 import { useCart } from '../context/CartContext';
 import { toast } from 'react-toastify';
 import ProductCard from '../components/products/ProductCard';
@@ -10,12 +11,16 @@ const ProductDetailPage: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
   const [product, setProduct] = useState<Producto | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Producto[]>([]);
+  const [mainImage, setMainImage] = useState<ProductoImagen | null>(null);
+  const [thumbnails, setThumbnails] = useState<ProductoImagen[]>([]);
+  const [allImages, setAllImages] = useState<ProductoImagen[]>([]);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { addToCart } = useCart();
 
-  // Cargar detalles del producto
+  // Cargar detalles del producto y sus imágenes
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (!productId) return;
@@ -24,6 +29,23 @@ const ProductDetailPage: React.FC = () => {
         setLoading(true);
         const data = await ProductosService.getById(parseInt(productId));
         setProduct(data);
+        
+        // Cargar todas las imágenes del producto
+        const images = await ProductosImagenesService.getByProductId(parseInt(productId));
+        setAllImages(images);
+        
+        // Buscar la imagen principal
+        const mainImg = images.find(img => img.principal === 1) || (images.length > 0 ? images[0] : null);
+        setMainImage(mainImg);
+        
+        if (mainImg) {
+          setSelectedImage(mainImg.imagen);
+        }
+        
+        // Filtrar miniaturas
+        const thumbs = images.filter(img => img.miniatura === 1);
+        setThumbnails(thumbs);        
+        
         setError(null);
         
         // Resetear la cantidad
@@ -61,12 +83,21 @@ const ProductDetailPage: React.FC = () => {
     }
   }, [product]);
 
+  // Manejar cambio de imagen seleccionada
+  const handleImageSelect = (imageUrl: string) => {
+    setSelectedImage(imageUrl);
+  };  
+
   // Manejar añadir al carrito
   const handleAddToCart = async () => {
     if (!product) return;
     
     try {
-      await addToCart(product.idProducto, quantity);
+      if (product.idProducto !== undefined) {
+        await addToCart(product.idProducto, quantity);
+      } else {
+        toast.error('El producto no tiene un identificador válido');
+      }
       toast.success(`${quantity} ${quantity > 1 ? 'unidades' : 'unidad'} de ${product.nombreProducto} añadidas al carrito`);
     } catch (err) {
       toast.error('Error al añadir al carrito');
@@ -131,11 +162,41 @@ const ProductDetailPage: React.FC = () => {
 
       {/* Detalles del producto */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        {/* Imagen del producto */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 flex items-center justify-center">
-          <div className="w-full h-80 bg-gray-100 dark:bg-gray-700 flex items-center justify-center rounded-lg">
-            <span className="text-6xl text-gray-400">{product.nombreProducto.substring(0, 1)}</span>
+        {/* Imágenes del producto */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+          {/* Imagen principal */}
+          <div className="mb-4 h-80 bg-gray-100 dark:bg-gray-700 flex items-center justify-center rounded-lg overflow-hidden">
+            {selectedImage ? (
+              <img 
+                src={selectedImage} 
+                alt={product.nombreProducto} 
+                className="h-full w-full object-contain"
+              />
+            ) : (
+              <span className="text-6xl text-gray-400">{product.nombreProducto.substring(0, 1)}</span>
+            )}
           </div>
+
+          {/* Miniaturas */}
+          {allImages.length > 1 && (
+            <div className="flex space-x-2 overflow-x-auto">
+              {allImages.map(img => (
+                <button 
+                  key={img.idImagen} 
+                  onClick={() => handleImageSelect(img.imagen)}
+                  className={`w-16 h-16 border-2 rounded overflow-hidden flex-shrink-0 ${
+                    selectedImage === img.imagen ? 'border-primary-600' : 'border-gray-200'
+                  }`}
+                >
+                  <img 
+                    src={img.imagen} 
+                    alt={img.descImagen || product.nombreProducto} 
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Información del producto */}
@@ -234,7 +295,7 @@ const ProductDetailPage: React.FC = () => {
               <ProductCard 
                 key={relatedProduct.idProducto} 
                 product={relatedProduct} 
-                onAddToCart={() => addToCart(relatedProduct.idProducto, 1)} 
+                onAddToCart={() => addToCart(relatedProduct.idProducto || 0, 1)} 
               />
             ))}
           </div>

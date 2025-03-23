@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -25,6 +25,11 @@ import NotFoundPage from './pages/NotFoundPage';
 // Rutas protegidas
 import ProtectedRoute from './components/common/ProtectedRoute';
 
+import AdminRoute from './components/common/AdminRoute';
+import AdminProductsPage from './pages/admin/AdminProductsPage';
+import AdminProductFormPage from './pages/admin/AdminProductFormPage';
+import AccessDeniedPage from './pages/AccessDeniedPage';
+
 function App() {
   return (
     <Router>
@@ -43,6 +48,33 @@ function App() {
               <Route path="login" element={<LoginPage />} />
               <Route path="registro" element={<RegisterPage />} />
               
+              {/* Rutas de administrador */}
+              <Route 
+                path="admin/productos" 
+                element={
+                  <AdminRoute>
+                    <AdminProductsPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="admin/productos/nuevo" 
+                element={
+                  <AdminRoute>
+                    <AdminProductFormPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route 
+                path="admin/productos/editar/:productId" 
+                element={
+                  <AdminRoute>
+                    <AdminProductFormPage />
+                  </AdminRoute>
+                } 
+              />
+              <Route path="acceso-denegado" element={<AccessDeniedPage />} />
+              
               {/* Rutas protegidas */}
               <Route 
                 path="checkout" 
@@ -57,6 +89,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <ProfilePage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="perfil/password" 
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage activeTab="password" />
                   </ProtectedRoute>
                 } 
               />

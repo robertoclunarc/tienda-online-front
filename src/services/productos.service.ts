@@ -36,5 +36,24 @@ export const ProductosService = {
   search: async (term: string): Promise<Producto[]> => {
     const response = await api.get(`/productos/buscar?term=${encodeURIComponent(term)}`);
     return response.data;
+  },
+
+  // Crear un nuevo producto (solo admin)
+  create: async (producto: Producto) => {
+    const response = await api.post('/productos', producto);
+    return response.data;
+  },
+
+  // Actualizar un producto (solo admin)
+  update: async (id: number, producto: Partial<Producto>) => {
+    const response = await api.put(`/productos/${id}`, producto);
+    return response.data;
+  },
+
+  // Eliminar un producto (solo admin)
+  delete: async (id: number): Promise<{ message: string }> => {
+    const response = await api.delete(`/productos/${id}`);
+    return response.data;
   }
+
 };

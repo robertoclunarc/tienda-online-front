@@ -100,7 +100,7 @@ const ProductListPage: React.FC = () => {
           case 'newest':
           default:
             // Asumiendo que los ID más altos son los más nuevos
-            data.sort((a, b) => b.idProducto - a.idProducto);
+            data.sort((a, b) => (b.idProducto ?? 0) - (a.idProducto ?? 0));
             break;
         }
 
@@ -259,7 +259,7 @@ const ProductListPage: React.FC = () => {
                 <ProductCard 
                   key={product.idProducto} 
                   product={product} 
-                  onAddToCart={() => addToCart(product.idProducto, 1)} 
+                  onAddToCart={() => addToCart(product.idProducto!, 1)} 
                 />
               ))}
             </div>

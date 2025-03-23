@@ -338,7 +338,9 @@ const HomePage: React.FC = () => {
                         <button 
                             onClick={(e) => {
                               e.preventDefault(); // Prevenir la navegación del Link
-                              addToWishlist(product.idProducto);
+                              if (product.idProducto !== undefined) {
+                                addToWishlist(product.idProducto);
+                              }
                             }}
                             className="text-gray-400 hover:text-[#e6007e] transition-colors"
                             aria-label="Añadir a favoritos"
@@ -352,7 +354,11 @@ const HomePage: React.FC = () => {
                   </Link>
                   <div className="px-4 pb-4">
                     <button 
-                      onClick={() => addToCart(product.idProducto, 1)}
+                      onClick={() => {
+                        if (product.idProducto !== undefined) {
+                          addToCart(product.idProducto, 1);
+                        }
+                      }}
                       className="w-full py-2 bg-[#1a3870] hover:bg-[#15305e] text-white rounded flex items-center justify-center"
                     >
                       <i className="fas fa-shopping-cart mr-2"></i>

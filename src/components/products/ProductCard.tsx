@@ -1,19 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Producto } from '../../types';
+import { ProductosImagenesService } from '../../services/productosImagenes.service';
 
 interface ProductCardProps {
   product: Producto;
   onAddToCart: () => void;
+  onAddToWishlist?: () => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart, onAddToWishlist }) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Cargar la imagen del producto
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        setLoading(true);
+        const mainImage = await ProductosImagenesService.getMainImageByProductId(product.idProducto || 0);
+        if (mainImage) {
+          setImageUrl(mainImage.imagen);
+        }
+      } catch (error) {
+        console.error('Error al cargar la imagen del producto:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchImage();
+  }, [product.idProducto]);
   return (
     <div className="card product-card bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <Link to={`/productos/${product.idProducto}`}>
-        <div className="product-image w-full h-48 flex items-center justify-center bg-gray-100 dark:bg-gray-700 p-4">
-          {/* Placeholder para imágenes de productos */}
-          <span className="text-2xl text-gray-400">{product.nombreProducto.substring(0, 1)}</span>
+      <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
+          {loading ? (
+            <div className="spinner"></div>
+          ) : imageUrl ? (
+            <img 
+              src={imageUrl} 
+              alt={product.nombreProducto} 
+              className="h-full w-full object-contain"
+            />
+          ) : (
+            <span className="text-4xl text-gray-300">{product.nombreProducto.charAt(0)}</span>
+          )}
         </div>
         <div className="p-4">
           <div className="flex justify-between items-start mb-2">
