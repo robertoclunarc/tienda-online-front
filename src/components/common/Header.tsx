@@ -15,9 +15,9 @@ const Header: React.FC = () => {
   // Obtener conteo de lista de deseos
   useEffect(() => {
     const fetchWishlistCount = async () => {
-      if (isAuthenticated && user?.idCuentaUser) {
+      if (isAuthenticated && user?.idcuentauser) {
         try {
-          const response = await api.get(`/listadeseos/usuario/${user.idCuentaUser}`);
+          const response = await api.get(`/listadeseos/usuario/${user.idcuentauser}`);
           setWishlistCount(response.data.length || 0);
         } catch (error) {
           console.error('Error al obtener conteo de lista de deseos:', error);
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
                   onClick={() => setShowUserMenu(!showUserMenu)}
                   className="text-white hover:text-white/80 flex items-center"
                 >
-                  <span>{user?.nombreUser || 'Usuario'}</span>
+                  <span>{user?.nombreuser || 'Usuario'}</span>
                   <i className={`fas fa-chevron-${showUserMenu ? 'up' : 'down'} ml-1`}></i>
                 </button>
                 

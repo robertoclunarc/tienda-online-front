@@ -130,7 +130,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     
     try {
       setLoading(true);
-      const response = await api.put(`/usuarios/${user.idCuentaUser}`, userData);
+      const response = await api.put(`/usuarios/${user.idcuentauser}`, userData);
       
       // Actualizar los datos del usuario en el estado
       setUser({

@@ -13,7 +13,7 @@ const AdminRoute: React.FC<AdminRouteProps> = ({ children }) => {
     return <div className="loading">Cargando...</div>;
   }
 
-  if (!isAuthenticated || user?.roleUser !== 'admin') {
+  if (!isAuthenticated || user?.roleuser !== 'admin') {
     return <Navigate to="/acceso-denegado" replace />;
   }
 

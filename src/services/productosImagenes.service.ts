@@ -5,14 +5,16 @@ export const ProductosImagenesService = {
   // Obtener todas las imágenes de un producto
   getByProductId: async (productoId: number): Promise<ProductoImagen[]> => {
     const response = await api.get(`/productos-imagenes/producto/${productoId}`);
-    return response.data;
+    const data: ProductoImagen[] = response.data;
+    return data;
   },
 
   // Obtener la imagen principal de un producto
   getMainImageByProductId: async (productoId: number): Promise<ProductoImagen | null> => {
     try {
       const response = await api.get(`/productos-imagenes/producto/${productoId}/principal`);
-      return response.data;
+      const data: ProductoImagen  = response.data;
+      return data;
     } catch (error) {
       if ((error as any).response?.status === 404) {
         return null;
@@ -24,13 +26,15 @@ export const ProductosImagenesService = {
   // Obtener miniaturas de un producto
   getThumbnailsByProductId: async (productoId: number): Promise<ProductoImagen[]> => {
     const response = await api.get(`/productos-imagenes/producto/${productoId}/miniaturas`);
-    return response.data;
+    const data: ProductoImagen[] = response.data;
+    return data;
   },
 
   // Obtener una imagen por su ID
   getById: async (id: number): Promise<ProductoImagen> => {
     const response = await api.get(`/productos-imagenes/${id}`);
-    return response.data;
+    const data: ProductoImagen = response.data;
+    return data;
   },
 
   // Crear una nueva imagen (solo admin)

@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ProductosService } from '../services/productos.service';
-import { CategoriasService } from '../services/categorias.service';
-import { Producto, Categoria } from '../types';
+import { ProductosImagenesService } from '../services/productosImagenes.service';
+//import { CategoriasService } from '../services/categorias.service';
+import { Producto, /*Categoria,*/ } from '../types';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -10,9 +11,10 @@ import api from '../services/api';
 
 const HomePage: React.FC = () => {
   const [featuredProducts, setFeaturedProducts] = useState<Producto[]>([]);
-  const [categories, setCategories] = useState<Categoria[]>([]);
+  const [productImages, setProductImages] = useState<Record<number, string | null>>({});
+  //const [categories, setCategories] = useState<Categoria[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  //const [error, setError] = useState<string | null>(null);
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const { addToCart } = useCart();
   const { isAuthenticated, user } = useAuth();
@@ -58,14 +60,31 @@ const HomePage: React.FC = () => {
         // Cargar productos destacados
         const products = await ProductosService.getFeatured(8);
         setFeaturedProducts(products);
-        
         // Cargar categorías
-        const categoriesData = await CategoriasService.getAll();
-        setCategories(categoriesData);
+        //const categoriesData = await CategoriasService.getAll();
+        //setCategories(categoriesData);
         
-        setError(null);
+        // Cargar imágenes principales para cada producto
+        const imagesPromises = products.map((product: any) => 
+          ProductosImagenesService.getMainImageByProductId(product.idproducto)
+            .then(image => ({ 
+              productId: product.idproducto, 
+              imageUrl: image ? image.imagen : null 
+            }))
+            .catch(() => ({ productId: product.idproducto, imageUrl: null }))
+        );
+        
+        const imagesResults = await Promise.all(imagesPromises);
+        const imagesMap: Record<number, string | null> = {};
+        imagesResults.forEach(result => {
+          imagesMap[result.productId] = result.imageUrl;
+        });
+        
+        setProductImages(imagesMap);
+        
+        //setError(null);
       } catch (err) {
-        setError('Error al cargar los datos');
+        //setError('Error al cargar los datos');
         console.error('Error al cargar los datos de la página de inicio:', err);
       } finally {
         setLoading(false);
@@ -128,7 +147,7 @@ const HomePage: React.FC = () => {
     try {
       // Añadir producto a la lista de deseos
       await api.post('/listadeseos', {
-        fkCuentaUser: user?.idCuentaUser,
+        fkCuentaUser: user?.idcuentauser,
         fkProducto: productId
       });
       
@@ -325,21 +344,37 @@ const HomePage: React.FC = () => {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {featuredProducts.map(product => (
-                <div key={product.idProducto} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
-                  <Link to={`/productos/${product.idProducto}`}>
-                    <div className="h-48 bg-gray-100 flex items-center justify-center p-4">
-                      <span className="text-4xl text-gray-300">{product.nombreProducto.charAt(0)}</span>
+                <div key={product.idproducto} className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+                  <Link to={`/productos/${product.idproducto}`}>
+                    <div className="h-48 bg-gray-100 overflow-hidden relative">
+                        {productImages[product.idproducto!] ? (
+                          <img 
+                            src={productImages[product.idproducto!]!} 
+                            alt={product.nombreproducto}
+                            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              // Si hay error al cargar la imagen, mostrar la inicial
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const placeholder = document.createElement('span');
+                              placeholder.textContent = product.nombreproducto.charAt(0);
+                              placeholder.className = 'text-4xl text-gray-300';
+                              target.parentNode?.appendChild(placeholder);
+                            }}
+                          />
+                        ) : (
+                          <span className="text-4xl text-gray-300">{product.nombreproducto.charAt(0)}</span>
+                        )}
                     </div>
-                    <div className="p-4">
-                      
+                    <div className="p-4">                      
                       <div className="flex justify-between items-start mb-1">
-                        <div className="text-sm text-gray-500 mb-2">{product.nombreCategoria}</div>
+                        <div className="text-sm text-gray-500 mb-2">{product.nombrecategoria}</div>
                         {/* Botón de lista de deseos */}
                         <button 
                             onClick={(e) => {
                               e.preventDefault(); // Prevenir la navegación del Link
-                              if (product.idProducto !== undefined) {
-                                addToWishlist(product.idProducto);
+                              if (product.idproducto !== undefined) {
+                                addToWishlist(product.idproducto);
                               }
                             }}
                             className="text-gray-400 hover:text-[#e6007e] transition-colors"
@@ -348,15 +383,15 @@ const HomePage: React.FC = () => {
                             <i className="fas fa-heart"></i>
                         </button>
                       </div>
-                      <h3 className="font-medium text-lg mb-1 line-clamp-2">{product.nombreProducto}</h3>
+                      <h3 className="font-medium text-lg mb-1 line-clamp-2">{product.nombreproducto}</h3>
                       <div className="font-bold text-xl text-[#e6007e]">${parseFloat(product.precio).toFixed(2)}</div>
                     </div>
                   </Link>
                   <div className="px-4 pb-4">
                     <button 
                       onClick={() => {
-                        if (product.idProducto !== undefined) {
-                          addToCart(product.idProducto, 1);
+                        if (product.idproducto !== undefined) {
+                          addToCart(product.idproducto, 1);
                         }
                       }}
                       className="w-full py-2 bg-[#1a3870] hover:bg-[#15305e] text-white rounded flex items-center justify-center"

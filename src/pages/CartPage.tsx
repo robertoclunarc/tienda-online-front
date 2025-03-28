@@ -72,18 +72,18 @@ const CartPage: React.FC = () => {
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {cartItems.map((item) => (
-                    <tr key={item.idCarrito}>
+                    <tr key={item.idcarrito}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-10 w-10 flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                            <span className="text-gray-500">{item.nombreProducto?.substring(0, 1)}</span>
+                            <span className="text-gray-500">{item.nombreproducto?.substring(0, 1)}</span>
                           </div>
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900 dark:text-white">
-                              {item.nombreProducto}
+                              {item.nombreproducto}
                             </div>
                             <div className="text-sm text-gray-500 dark:text-gray-400">
-                              {item.nombreCategoria}
+                              {item.nombrecategoria}
                             </div>
                           </div>
                         </div>
@@ -96,7 +96,7 @@ const CartPage: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <button 
-                            onClick={() => handleQuantityChange(item.idCarrito, item.cantProducto - 1)}
+                            onClick={() => handleQuantityChange(item.idcarrito, item.cantproducto - 1)}
                             className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-l-md"
                           >
                             <i className="fas fa-minus text-xs"></i>
@@ -104,17 +104,17 @@ const CartPage: React.FC = () => {
                           <input 
                             type="number" 
                             min="1"
-                            value={item.cantProducto}
+                            value={item.cantproducto}
                             onChange={(e) => {
                               const val = parseInt(e.target.value);
                               if (val >= 1) {
-                                handleQuantityChange(item.idCarrito, val);
+                                handleQuantityChange(item.idcarrito, val);
                               }
                             }}
                             className="w-12 px-2 py-1 text-center border-t border-b border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                           />
                           <button 
-                            onClick={() => handleQuantityChange(item.idCarrito, item.cantProducto + 1)}
+                            onClick={() => handleQuantityChange(item.idcarrito, item.cantproducto + 1)}
                             className="px-2 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-r-md"
                           >
                             <i className="fas fa-plus text-xs"></i>
@@ -123,12 +123,12 @@ const CartPage: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900 dark:text-white">
-                          ${parseFloat(item.montoTotal).toFixed(2)}
+                          ${parseFloat(item.montototal).toFixed(2)}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <button 
-                          onClick={() => removeFromCart(item.idCarrito)}
+                          onClick={() => removeFromCart(item.idcarrito)}
                           className="text-red-600 hover:text-red-900 dark:hover:text-red-400"
                         >
                           <i className="fas fa-trash"></i>

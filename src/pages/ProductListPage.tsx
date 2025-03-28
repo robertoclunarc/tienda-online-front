@@ -92,15 +92,15 @@ const ProductListPage: React.FC = () => {
             data.sort((a, b) => parseFloat(b.precio) - parseFloat(a.precio));
             break;
           case 'name-asc':
-            data.sort((a, b) => a.nombreProducto.localeCompare(b.nombreProducto));
+            data.sort((a, b) => a.nombreproducto.localeCompare(b.nombreproducto));
             break;
           case 'name-desc':
-            data.sort((a, b) => b.nombreProducto.localeCompare(a.nombreProducto));
+            data.sort((a, b) => b.nombreproducto.localeCompare(a.nombreproducto));
             break;
           case 'newest':
           default:
             // Asumiendo que los ID más altos son los más nuevos
-            data.sort((a, b) => (b.idProducto ?? 0) - (a.idProducto ?? 0));
+            data.sort((a, b) => (b.idproducto ?? 0) - (a.idproducto ?? 0));
             break;
         }
 
@@ -138,9 +138,9 @@ const ProductListPage: React.FC = () => {
         {searchTerm
           ? `Resultados para "${searchTerm}"`
           : selectedSubcategory
-          ? subcategories.find(s => s.idSubCategoria === selectedSubcategory)?.descSubCategoria || 'Productos'
+          ? subcategories.find(s => s.idsubcategoria === selectedSubcategory)?.descsubcategoria || 'Productos'
           : selectedCategory
-          ? categories.find(c => c.idCategoria === selectedCategory)?.descCategoria || 'Productos'
+          ? categories.find(c => c.idcategoria === selectedCategory)?.desccategoria || 'Productos'
           : 'Todos los Productos'}
       </h1>
 
@@ -162,15 +162,15 @@ const ProductListPage: React.FC = () => {
                 </button>
               </li>
               {categories.map(category => (
-                <li key={category.idCategoria}>
+                <li key={category.idcategoria}>
                   <button
                     onClick={() => {
-                      setSelectedCategory(category.idCategoria);
+                      setSelectedCategory(category.idcategoria);
                       setSelectedSubcategory(null);
                     }}
-                    className={`text-left w-full py-1 ${selectedCategory === category.idCategoria ? 'font-bold text-primary-600' : 'text-gray-700 dark:text-gray-300'}`}
+                    className={`text-left w-full py-1 ${selectedCategory === category.idcategoria ? 'font-bold text-primary-600' : 'text-gray-700 dark:text-gray-300'}`}
                   >
-                    {category.descCategoria}
+                    {category.desccategoria}
                   </button>
                 </li>
               ))}
@@ -182,12 +182,12 @@ const ProductListPage: React.FC = () => {
               <h2 className="text-lg font-bold mb-4">Subcategorías</h2>
               <ul className="space-y-2">
                 {subcategories.map(subcategory => (
-                  <li key={subcategory.idSubCategoria}>
+                  <li key={subcategory.idsubcategoria}>
                     <button
-                      onClick={() => setSelectedSubcategory(subcategory.idSubCategoria)}
-                      className={`text-left w-full py-1 ${selectedSubcategory === subcategory.idSubCategoria ? 'font-bold text-primary-600' : 'text-gray-700 dark:text-gray-300'}`}
+                      onClick={() => setSelectedSubcategory(subcategory.idsubcategoria)}
+                      className={`text-left w-full py-1 ${selectedSubcategory === subcategory.idsubcategoria ? 'font-bold text-primary-600' : 'text-gray-700 dark:text-gray-300'}`}
                     >
-                      {subcategory.descSubCategoria}
+                      {subcategory.descsubcategoria}
                     </button>
                   </li>
                 ))}
@@ -257,9 +257,9 @@ const ProductListPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map(product => (
                 <ProductCard 
-                  key={product.idProducto} 
+                  key={product.idproducto} 
                   product={product} 
-                  onAddToCart={() => addToCart(product.idProducto!, 1)} 
+                  onAddToCart={() => addToCart(product.idproducto!, 1)} 
                 />
               ))}
             </div>

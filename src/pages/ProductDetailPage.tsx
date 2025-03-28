@@ -64,13 +64,13 @@ const ProductDetailPage: React.FC = () => {
   // Cargar productos relacionados
   useEffect(() => {
     const fetchRelatedProducts = async () => {
-      if (!product || !product.fkSubCategoria) return;
+      if (!product || !product.fksubcategoria) return;
       
       try {
-        const data = await ProductosService.getBySubcategory(product.fkSubCategoria);
+        const data = await ProductosService.getBySubcategory(product.fksubcategoria);
         // Filtrar el producto actual y limitar a 4 productos
         const filtered = data
-          .filter(p => p.idProducto !== product.idProducto)
+          .filter(p => p.idproducto !== product.idproducto)
           .slice(0, 4);
         setRelatedProducts(filtered);
       } catch (err) {
@@ -93,12 +93,12 @@ const ProductDetailPage: React.FC = () => {
     if (!product) return;
     
     try {
-      if (product.idProducto !== undefined) {
-        await addToCart(product.idProducto, quantity);
+      if (product.idproducto !== undefined) {
+        await addToCart(product.idproducto, quantity);
       } else {
         toast.error('El producto no tiene un identificador válido');
       }
-      toast.success(`${quantity} ${quantity > 1 ? 'unidades' : 'unidad'} de ${product.nombreProducto} añadidas al carrito`);
+      toast.success(`${quantity} ${quantity > 1 ? 'unidades' : 'unidad'} de ${product.nombreproducto} añadidas al carrito`);
     } catch (err) {
       toast.error('Error al añadir al carrito');
     }
@@ -106,7 +106,7 @@ const ProductDetailPage: React.FC = () => {
 
   // Incrementar cantidad
   const incrementQuantity = () => {
-    if (product && quantity < product.cantInventario) {
+    if (product && quantity < product.cantinventario) {
       setQuantity(prev => prev + 1);
     }
   };
@@ -145,17 +145,17 @@ const ProductDetailPage: React.FC = () => {
           <ul className="flex space-x-2">
             <li><Link to="/" className="text-gray-500 dark:text-gray-400 hover:text-primary-600">Inicio</Link></li>
             <li className="text-gray-500 dark:text-gray-400">/</li>
-            {product.nombreCategoria && (
+            {product.nombrecategoria && (
               <>
                 <li>
-                  <Link to={`/productos/categoria/${product.fkSubCategoria}`} className="text-gray-500 dark:text-gray-400 hover:text-primary-600">
-                    {product.nombreCategoria}
+                  <Link to={`/productos/categoria/${product.fksubcategoria}`} className="text-gray-500 dark:text-gray-400 hover:text-primary-600">
+                    {product.nombrecategoria}
                   </Link>
                 </li>
                 <li className="text-gray-500 dark:text-gray-400">/</li>
               </>
             )}
-            <li className="text-gray-700 dark:text-gray-300">{product.nombreProducto}</li>
+            <li className="text-gray-700 dark:text-gray-300">{product.nombreproducto}</li>
           </ul>
         </nav>
       </div>
@@ -169,11 +169,11 @@ const ProductDetailPage: React.FC = () => {
             {selectedImage ? (
               <img 
                 src={selectedImage} 
-                alt={product.nombreProducto} 
+                alt={product.nombreproducto} 
                 className="h-full w-full object-contain"
               />
             ) : (
-              <span className="text-6xl text-gray-400">{product.nombreProducto.substring(0, 1)}</span>
+              <span className="text-6xl text-gray-400">{product.nombreproducto.substring(0, 1)}</span>
             )}
           </div>
 
@@ -182,7 +182,7 @@ const ProductDetailPage: React.FC = () => {
             <div className="flex space-x-2 overflow-x-auto">
               {allImages.map(img => (
                 <button 
-                  key={img.idImagen} 
+                  key={img.idimagen} 
                   onClick={() => handleImageSelect(img.imagen)}
                   className={`w-16 h-16 border-2 rounded overflow-hidden flex-shrink-0 ${
                     selectedImage === img.imagen ? 'border-primary-600' : 'border-gray-200'
@@ -190,7 +190,7 @@ const ProductDetailPage: React.FC = () => {
                 >
                   <img 
                     src={img.imagen} 
-                    alt={img.descImagen || product.nombreProducto} 
+                    alt={img.descimagen || product.nombreproducto} 
                     className="w-full h-full object-cover"
                   />
                 </button>
@@ -201,26 +201,26 @@ const ProductDetailPage: React.FC = () => {
 
         {/* Información del producto */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.nombreProducto}</h1>
+          <h1 className="text-3xl font-bold mb-4 text-gray-900 dark:text-white">{product.nombreproducto}</h1>
           
           <div className="mb-4">
             <div className="flex items-center space-x-2 mb-2">
               <span className="font-medium text-gray-600 dark:text-gray-400">Marca:</span>
-              <span className="text-gray-800 dark:text-gray-200">{product.nombreMarca || 'No especificada'}</span>
+              <span className="text-gray-800 dark:text-gray-200">{product.nombremarca || 'No especificada'}</span>
             </div>
             <div className="flex items-center space-x-2 mb-2">
               <span className="font-medium text-gray-600 dark:text-gray-400">Modelo:</span>
-              <span className="text-gray-800 dark:text-gray-200">{product.nombreModelo || 'No especificado'}</span>
+              <span className="text-gray-800 dark:text-gray-200">{product.nombremodelo || 'No especificado'}</span>
             </div>
             <div className="flex items-center space-x-2">
               <span className="font-medium text-gray-600 dark:text-gray-400">Categoría:</span>
-              <span className="text-gray-800 dark:text-gray-200">{product.nombreCategoria || 'No especificada'}</span>
+              <span className="text-gray-800 dark:text-gray-200">{product.nombrecategoria || 'No especificada'}</span>
             </div>
           </div>
           
           <div className="mb-6">
             <p className="text-gray-700 dark:text-gray-300">
-              {product.descProducto || 'Sin descripción disponible para este producto.'}
+              {product.descproducto || 'Sin descripción disponible para este producto.'}
             </p>
           </div>
           
@@ -229,7 +229,7 @@ const ProductDetailPage: React.FC = () => {
               ${parseFloat(product.precio).toFixed(2)}
             </span>
             <span className="ml-2 text-sm text-gray-500 dark:text-gray-400">
-              {product.cantInventario > 0 ? `${product.cantInventario} disponibles` : 'Agotado'}
+              {product.cantinventario > 0 ? `${product.cantinventario} disponibles` : 'Agotado'}
             </span>
           </div>
           
@@ -245,11 +245,11 @@ const ProductDetailPage: React.FC = () => {
               <input 
                 type="number" 
                 min="1" 
-                max={product.cantInventario}
+                max={product.cantinventario}
                 value={quantity}
                 onChange={(e) => {
                   const val = parseInt(e.target.value);
-                  if (val > 0 && val <= product.cantInventario) {
+                  if (val > 0 && val <= product.cantinventario) {
                     setQuantity(val);
                   }
                 }}
@@ -257,7 +257,7 @@ const ProductDetailPage: React.FC = () => {
               />
               <button 
                 onClick={incrementQuantity}
-                disabled={quantity >= product.cantInventario}
+                disabled={quantity >= product.cantinventario}
                 className="px-3 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-r-md"
               >
                 <i className="fas fa-plus"></i>
@@ -268,9 +268,9 @@ const ProductDetailPage: React.FC = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <button 
               onClick={handleAddToCart}
-              disabled={product.cantInventario <= 0}
+              disabled={product.cantinventario <= 0}
               className={`flex-1 py-3 px-6 rounded-md text-white flex items-center justify-center ${
-                product.cantInventario > 0 
+                product.cantinventario > 0 
                   ? 'bg-primary-600 hover:bg-primary-700' 
                   : 'bg-gray-400 cursor-not-allowed'
               } transition duration-300`}
@@ -293,9 +293,9 @@ const ProductDetailPage: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {relatedProducts.map(relatedProduct => (
               <ProductCard 
-                key={relatedProduct.idProducto} 
+                key={relatedProduct.idproducto} 
                 product={relatedProduct} 
-                onAddToCart={() => addToCart(relatedProduct.idProducto || 0, 1)} 
+                onAddToCart={() => addToCart(relatedProduct.idproducto || 0, 1)} 
               />
             ))}
           </div>

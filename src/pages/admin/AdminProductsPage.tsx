@@ -39,8 +39,8 @@ const AdminProductsPage: React.FC = () => {
       setFilteredProducts(products);
     } else {
       const filtered = products.filter(product =>
-        product.nombreProducto.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (product.descProducto && product.descProducto.toLowerCase().includes(searchTerm.toLowerCase()))
+        product.nombreproducto.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (product.descproducto && product.descproducto.toLowerCase().includes(searchTerm.toLowerCase()))
       );
       setFilteredProducts(filtered);
     }
@@ -52,7 +52,7 @@ const AdminProductsPage: React.FC = () => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
       try {
         const resp = await ProductosService.delete(productId);
-        setProducts(products.filter(p => p.idProducto !== productId));
+        setProducts(products.filter(p => p.idproducto !== productId));
         toast.success(resp.message);
       } catch (err) {
         toast.error('Error al eliminar el producto');
@@ -134,19 +134,19 @@ const AdminProductsPage: React.FC = () => {
                 </tr>
               ) : (
                 currentProducts.map(product => (
-                  <tr key={product.idProducto}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.idProducto}</td>
+                  <tr key={product.idproducto}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.idproducto}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{product.nombreProducto}</div>
+                      <div className="text-sm font-medium text-gray-900">{product.nombreproducto}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {product.nombreCategoria || 'Sin categoría'}
+                      {product.nombrecategoria || 'Sin categoría'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       ${parseFloat(product.precio).toFixed(2)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {product.cantInventario}
+                      {product.cantinventario}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -159,13 +159,13 @@ const AdminProductsPage: React.FC = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <Link 
-                        to={`/admin/productos/editar/${product.idProducto}`} 
+                        to={`/admin/productos/editar/${product.idproducto}`} 
                         className="text-indigo-600 hover:text-indigo-900 mr-4"
                       >
                         <i className="fas fa-edit"></i>
                       </Link>
                       <button 
-                        onClick={() => product.idProducto !== undefined && handleDeleteProduct(product.idProducto)}
+                        onClick={() => product.idproducto !== undefined && handleDeleteProduct(product.idproducto)}
                         className="text-red-600 hover:text-red-900"
                       >
                         <i className="fas fa-trash"></i>

@@ -1,93 +1,93 @@
 // Interfaces de productos
 export interface Producto {
-    idProducto?: number;
-    nombreProducto: string;
-    descProducto: string | null;
+    idproducto?: number;
+    nombreproducto: string;
+    descproducto: string | null;
     precio: string;
-    cantInventario: number;
-    fkModelo: number;
-    fkSubCategoria: number;
+    cantinventario: number;
+    fkmodelo: number;
+    fksubcategoria: number;
     estatus: string;
-    nombreMarca?: string;
-    nombreModelo?: string;
-    nombreCategoria?: string;
-    nombreSubCategoria?: string;
+    nombremarca?: string;
+    nombremodelo?: string;
+    nombrecategoria?: string;
+    nombresubcategoria?: string;
   }
   
   // Interfaces de categorías
   export interface Categoria {
-    idCategoria: number;
-    descCategoria: string;
+    idcategoria: number;
+    desccategoria: string;
   }
   
   export interface Subcategoria {
-    idSubCategoria: number;
-    descSubCategoria: string;
-    fkCategoria: number;
+    idsubcategoria: number;
+    descsubcategoria: string;
+    fkcategoria: number;
   }
   
   // Interfaces de marcas y modelos
   export interface Marca {
-    idMarca: number;
-    descMarca: string;
+    idmarca: number;
+    descmarca: string;
   }
   
   export interface Modelo {
-    idModelo: number;
-    descModelo: string;
-    fkMarca: number;
-    nombreMarca?: string;
+    idmodelo: number;
+    descmodelo: string;
+    fkmarca: number;
+    nombremarca?: string;
   }
   
   // Interfaces de ofertas
   export interface Oferta {
-    idOferta: number;
-    descOferta: string;
+    idoferta: number;
+    descoferta: string;
     descuento: string;
-    inicioOferta: string;
-    finOferta: string;
-    estatusOferta: string;
+    iniciooferta: string;
+    finoferta: string;
+    estatusoferta: string;
   }
   
   // Interfaces de usuario
   export interface Usuario {
-    idCuentaUser: number;
-    nombreUser: string | null;
-    emailUser: string;
-    tlfUser: string | null;
+    idcuentauser: number;
+    nombreuser: string | null;
+    emailuser: string;
+    tlfuser: string | null;
     estatus: string;
-    roleUser: string;
+    roleuser: string;
   }
   
   // Interfaces de carrito
   export interface ItemCarrito {
-    idCarrito: number;
-    fkProducto: number;
-    cantProducto: number;
-    montoTotal: string;
-    fkCuentaUser: number;
-    estatusCarrito: string;
-    nombreProducto?: string;
+    idcarrito: number;
+    fkproducto: number;
+    cantproducto: number;
+    montototal: string;
+    fkcuentaUser: number;
+    estatuscarrito: string;
+    nombreproducto?: string;
     precio?: string;
-    nombreCategoria?: string;
+    nombrecategoria?: string;
   }
   
   // Interfaces de lista de deseos
   export interface ItemListaDeseos {
-    idLista: number;
-    fkCuentaUser: number;
-    fkProducto: number;
-    fechaRegsitro: string;
-    nombreProducto?: string;
+    idlista: number;
+    fkcuentauser: number;
+    fkproducto: number;
+    fecharegsitro: string;
+    nombreproducto?: string;
     precio?: string;
-    nombreCategoria?: string;
+    nombrecategoria?: string;
   }
 
   export interface ProductoImagen {
-    idImagen?: number;
-    descImagen?: string;
+    idimagen?: number;
+    descimagen?: string;
     imagen: string;
     miniatura?: number; // 1 o 0 para true o false
     principal?: number; // 1 o 0 para true o false
-    fkProducto: number;
+    fkproducto: number;
   }

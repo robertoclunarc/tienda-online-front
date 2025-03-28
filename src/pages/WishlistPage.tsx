@@ -20,7 +20,7 @@ const WishlistPage: React.FC = () => {
       
       try {
         setLoading(true);
-        const response = await api.get(`/listadeseos/usuario/${user.idCuentaUser}`);
+        const response = await api.get(`/listadeseos/usuario/${user.idcuentauser}`);
         setWishlistItems(response.data);
         setError(null);
       } catch (err) {
@@ -50,7 +50,7 @@ const WishlistPage: React.FC = () => {
       await api.delete(`/listadeseos/${wishlistItemId}`);
       
       // Actualizar la lista de deseos
-      setWishlistItems(prev => prev.filter(item => item.idLista !== wishlistItemId));
+      setWishlistItems(prev => prev.filter(item => item.idlista !== wishlistItemId));
       
       toast.success('Producto eliminado de la lista de deseos');
     } catch (err) {
@@ -94,26 +94,26 @@ const WishlistPage: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {wishlistItems.map((item) => (
-            <div key={item.idLista} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-              <Link to={`/productos/${item.fkProducto}`}>
+            <div key={item.idlista} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+              <Link to={`/productos/${item.fkproducto}`}>
                 <div className="h-48 bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
-                  <span className="text-4xl text-gray-400">{item.nombreProducto?.substring(0, 1)}</span>
+                  <span className="text-4xl text-gray-400">{item.nombreproducto?.substring(0, 1)}</span>
                 </div>
                 <div className="p-4">
-                  <h3 className="font-medium text-lg mb-2 text-gray-900 dark:text-white">{item.nombreProducto}</h3>
+                  <h3 className="font-medium text-lg mb-2 text-gray-900 dark:text-white">{item.nombreproducto}</h3>
                   <p className="text-primary-600 dark:text-primary-400 font-bold">${parseFloat(item.precio || '0').toFixed(2)}</p>
                 </div>
               </Link>
               <div className="p-4 pt-0 flex flex-col space-y-2">
                 <button
-                  onClick={() => handleAddToCart(item.fkProducto)}
+                  onClick={() => handleAddToCart(item.fkproducto)}
                   className="w-full py-2 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-md transition duration-300 flex items-center justify-center"
                 >
                   <i className="fas fa-shopping-cart mr-2"></i>
                   Añadir al carrito
                 </button>
                 <button
-                  onClick={() => handleRemoveFromWishlist(item.idLista)}
+                  onClick={() => handleRemoveFromWishlist(item.idlista)}
                   className="w-full py-2 px-4 border border-red-600 text-red-600 hover:bg-red-50 dark:hover:bg-red-900 rounded-md transition duration-300 flex items-center justify-center"
                 >
                   <i className="fas fa-trash mr-2"></i>

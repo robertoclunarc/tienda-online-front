@@ -101,33 +101,33 @@ const AdminProductFormPage: React.FC = () => {
           setProductImages(productImagesData);
           
           // Encontrar la categoría basada en la subcategoría
-          const subcategory = subcategoriesData.find(sc => sc.idSubCategoria === productData.fkSubCategoria);
+          const subcategory = subcategoriesData.find(sc => sc.idsubcategoria === productData.fksubcategoria);
           if (subcategory) {
-            setSelectedCategory(subcategory.fkCategoria);
-            setFilteredSubcategories(subcategoriesData.filter(sc => sc.fkCategoria === subcategory.fkCategoria));
+            setSelectedCategory(subcategory.fkcategoria);
+            setFilteredSubcategories(subcategoriesData.filter(sc => sc.fkcategoria === subcategory.fkcategoria));
           }
           
           // Encontrar la marca basada en el modelo
-          const model = modelsData.find((m: Modelo) => m.idModelo === productData.fkModelo);
+          const model = modelsData.find((m: Modelo) => m.idmodelo === productData.fkmodelo);
           if (model) {
-            setSelectedBrand(model.fkMarca);
-            setFilteredModels(modelsData.filter((m: Modelo) => m.fkMarca === model.fkMarca));
+            setSelectedBrand(model.fkmarca);
+            setFilteredModels(modelsData.filter((m: Modelo) => m.fkmarca === model.fkmarca));
           }
           
           // Preparar valores iniciales del formulario
           setInitialValues({
-            idProducto: productData.idProducto,
-            nombreProducto: productData.nombreProducto,
-            descProducto: productData.descProducto || '',
+            idProducto: productData.idproducto,
+            nombreProducto: productData.nombreproducto,
+            descProducto: productData.descproducto || '',
             precio: productData.precio,
-            cantInventario: productData.cantInventario,
-            fkModelo: productData.fkModelo,
-            fkSubCategoria: productData.fkSubCategoria,
+            cantInventario: productData.cantinventario,
+            fkModelo: productData.fkmodelo,
+            fkSubCategoria: productData.fksubcategoria,
             estatus: productData.estatus,
             imagenes: productImagesData.map(img => ({
-              id: img.idImagen,
+              id: img.idimagen,
               url: img.imagen,
-              descripcion: img.descImagen || '',
+              descripcion: img.descimagen || '',
               esMiniatura: img.miniatura === 1,
               esPrincipal: img.principal === 1,
               isNew: false,
@@ -149,13 +149,13 @@ const AdminProductFormPage: React.FC = () => {
   // Manejar cambio de categoría
   const handleCategoryChange = (categoryId: number) => {
     setSelectedCategory(categoryId);
-    setFilteredSubcategories(subcategories.filter(sc => sc.fkCategoria === categoryId));
+    setFilteredSubcategories(subcategories.filter(sc => sc.fkcategoria === categoryId));
   };
 
   // Manejar cambio de marca
   const handleBrandChange = (brandId: number) => {
     setSelectedBrand(brandId);
-    setFilteredModels(models.filter(m => m.fkMarca === brandId));
+    setFilteredModels(models.filter(m => m.fkmarca === brandId));
   };
 
   // Manejar envío del formulario
@@ -166,20 +166,20 @@ const AdminProductFormPage: React.FC = () => {
 
       // Convertir precio a string si es necesario
       let productData: Producto = {        
-        nombreProducto:values.nombreProducto,
-        descProducto: values.descProducto,
+        nombreproducto:values.nombreProducto,
+        descproducto: values.descProducto,
         precio: values.precio.toString(),
-        cantInventario: values.cantInventario,
-        fkModelo: values.fkModelo,
-        fkSubCategoria: values.fkSubCategoria,
+        cantinventario: values.cantInventario,
+        fkmodelo: values.fkModelo,
+        fksubcategoria: values.fkSubCategoria,
         estatus: values.estatus,
       };
 
       if (isEditing) {
         // Actualizar producto existente
         productId = values.idProducto!;
-        productData.idProducto =  productId!;
-        await ProductosService.update(productData.idProducto, productData);
+        productData.idproducto =  productId!;
+        await ProductosService.update(productData.idproducto, productData);
       } else {
         // Crear nuevo producto
         const data = await ProductosService.create(productData);
@@ -195,17 +195,17 @@ const AdminProductFormPage: React.FC = () => {
         } else if (img.isNew) {
           // Crear nueva imagen
           const imagenData: ProductoImagen = {
-            descImagen: img.descripcion,
+            descimagen: img.descripcion,
             imagen: img.url,
             miniatura: img.esMiniatura ? 1 : 0,
             principal: img.esPrincipal ? 1 : 0,
-            fkProducto: productId
+            fkproducto: productId
           };
           return ProductosImagenesService.create(imagenData);
         } else if (img.id) {
           // Actualizar imagen existente
           const imagenData: Partial<ProductoImagen> = {
-            descImagen: img.descripcion,
+            descimagen: img.descripcion,
             imagen: img.url,
             miniatura: img.esMiniatura ? 1 : 0,
             principal: img.esPrincipal ? 1 : 0
@@ -322,8 +322,8 @@ const AdminProductFormPage: React.FC = () => {
                   >
                     <option value="">Seleccione una categoría</option>
                     {categories.map(category => (
-                      <option key={category.idCategoria} value={category.idCategoria}>
-                        {category.descCategoria}
+                      <option key={category.idcategoria} value={category.idcategoria}>
+                        {category.desccategoria}
                       </option>
                     ))}
                   </select>
@@ -343,8 +343,8 @@ const AdminProductFormPage: React.FC = () => {
                   >
                     <option value="">Seleccione una subcategoría</option>
                     {filteredSubcategories.map(subcategory => (
-                      <option key={subcategory.idSubCategoria} value={subcategory.idSubCategoria}>
-                        {subcategory.descSubCategoria}
+                      <option key={subcategory.idsubcategoria} value={subcategory.idsubcategoria}>
+                        {subcategory.descsubcategoria}
                       </option>
                     ))}
                   </Field>
@@ -364,8 +364,8 @@ const AdminProductFormPage: React.FC = () => {
                   >
                     <option value="">Seleccione una marca</option>
                     {brands.map(brand => (
-                      <option key={brand.idMarca} value={brand.idMarca}>
-                        {brand.descMarca}
+                      <option key={brand.idmarca} value={brand.idmarca}>
+                        {brand.descmarca}
                       </option>
                     ))}
                   </select>
@@ -385,8 +385,8 @@ const AdminProductFormPage: React.FC = () => {
                   >
                     <option value="">Seleccione un modelo</option>
                     {filteredModels.map(model => (
-                      <option key={model.idModelo} value={model.idModelo}>
-                        {model.descModelo}
+                      <option key={model.idmodelo} value={model.idmodelo}>
+                        {model.descmodelo}
                       </option>
                     ))}
                   </Field>

@@ -61,9 +61,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
   useEffect(() => {
     if (user) {
       setFormData({
-        nombreUser: user.nombreUser || '',
-        emailUser: user.emailUser || '',
-        tlfUser: user.tlfUser || '',
+        nombreUser: user.nombreuser || '',
+        emailUser: user.emailuser || '',
+        tlfUser: user.tlfuser || '',
       });
     }
   }, [user]);
@@ -75,7 +75,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
       
       try {
         setLoadingOrders(true);
-        const response = await api.get(`/ventas/usuario/${user.idCuentaUser}`);
+        const response = await api.get(`/ventas/usuario/${user.idcuentauser}`);
         setOrders(response.data);
       } catch (error) {
         console.error('Error al cargar los pedidos:', error);
@@ -105,8 +105,8 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
       
       // Actualizar perfil
       await updateProfile({
-        nombreUser: formData.nombreUser,
-        tlfUser: formData.tlfUser,
+        nombreuser: formData.nombreUser,
+        tlfuser: formData.tlfUser,
       });
       
       toast.success('Perfil actualizado correctamente');
@@ -133,7 +133,7 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
       setSubmittingPassword(true);
       
       await api.post('/auth/change-password', {
-        userId: user?.idCuentaUser,
+        userId: user?.idcuentauser,
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword
       });
@@ -191,11 +191,11 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ activeTab = 'profile' }) => {
             <div className="p-6 border-b border-gray-200 dark:border-gray-700">
               <div className="flex items-center">
               <div className="h-12 w-12 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-primary-600 dark:text-primary-400 font-bold text-lg">
-                  {user?.nombreUser?.[0] || user?.emailUser?.[0] || 'U'}
+                  {user?.nombreuser?.[0] || user?.emailuser?.[0] || 'U'}
                 </div>
                 <div className="ml-4">
-                  <p className="font-medium text-gray-900 dark:text-white">{user.nombreUser || 'Usuario'}</p>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">{user.emailUser}</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{user.nombreuser || 'Usuario'}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{user.emailuser}</p>
                 </div>
               </div>
             </div>

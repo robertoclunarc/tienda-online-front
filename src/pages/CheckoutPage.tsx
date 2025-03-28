@@ -25,9 +25,9 @@ const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<FormData>({
-    nombre: user?.nombreUser || '',
-    email: user?.emailUser || '',
-    telefono: user?.tlfUser || '',
+    nombre: user?.nombreuser || '',
+    email: user?.emailuser || '',
+    telefono: user?.tlfuser || '',
     direccion: '',
     ciudad: '',
     pais: '',
@@ -58,17 +58,17 @@ const CheckoutPage: React.FC = () => {
       
       // Preparar los datos de la venta
       const venta = {
-        fkCuentaUser: user?.idCuentaUser || 1, // Asumiendo que el usuario está autenticado
+        fkCuentaUser: user?.idcuentauser || 1, // Asumiendo que el usuario está autenticado
         montoTotalVenta: cartTotal,
         // Otros campos según tu modelo de venta
       };
       
       // Preparar los detalles de la venta
       const detalles = cartItems.map(item => ({
-        fkProducto: item.fkProducto,
+        fkProducto: item.fkproducto,
         precioUnitario: item.precio || '0.0',
-        cantProducto: item.cantProducto,
-        subTotal: item.montoTotal
+        cantProducto: item.cantproducto,
+        subTotal: item.montototal
       }));
       
       // Enviar la venta al servidor
@@ -345,18 +345,18 @@ const CheckoutPage: React.FC = () => {
             
             <div className="space-y-4 mb-6">
               {cartItems.map((item) => (
-                <div key={item.idCarrito} className="flex justify-between">
+                <div key={item.idcarrito} className="flex justify-between">
                   <div className="flex items-start">
                     <div className="h-10 w-10 flex-shrink-0 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mr-3">
-                      <span className="text-gray-500">{item.nombreProducto?.substring(0, 1)}</span>
+                      <span className="text-gray-500">{item.nombreproducto?.substring(0, 1)}</span>
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-gray-900 dark:text-white">{item.nombreProducto}</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">Cant: {item.cantProducto}</p>
+                      <p className="text-sm font-medium text-gray-900 dark:text-white">{item.nombreproducto}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">Cant: {item.cantproducto}</p>
                     </div>
                   </div>
                   <span className="text-sm font-medium text-gray-900 dark:text-white">
-                    ${parseFloat(item.montoTotal).toFixed(2)}
+                    ${parseFloat(item.montototal).toFixed(2)}
                   </span>
                 </div>
               ))}
