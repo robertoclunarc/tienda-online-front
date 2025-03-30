@@ -12,6 +12,7 @@ export const ProductosService = {
   // Obtener productos destacados
   getFeatured: async (limit: number = 8) => {
     const response = await api.get(`/productos/destacados?limit=${limit}`);
+    //console.log(response.data);
     const data: Producto[] = response.data;
     return data;
   },

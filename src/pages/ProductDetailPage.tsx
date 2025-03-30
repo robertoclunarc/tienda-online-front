@@ -27,6 +27,7 @@ const ProductDetailPage: React.FC = () => {
       
       try {
         setLoading(true);
+        console.log('Cargando producto con ID:', productId);
         const data = await ProductosService.getById(parseInt(productId));
         setProduct(data);
         

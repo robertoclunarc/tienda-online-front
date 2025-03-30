@@ -44,9 +44,9 @@ const RegisterPage: React.FC = () => {
       setError(null);
       
       await register({
-        nombreUser: formData.nombreUser,
-        emailUser: formData.emailUser,
-        tlfUser: formData.tlfUser,
+        nombreuser: formData.nombreUser,
+        emailuser: formData.emailUser,
+        tlfuser: formData.tlfUser,
         passw: formData.passw,
       });
       

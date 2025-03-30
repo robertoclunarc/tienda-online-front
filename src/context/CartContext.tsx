@@ -66,10 +66,10 @@ export const CartProvider: React.FC<CartProviderProps> = ({ children }) => {
     try {
       setLoading(true);
       await api.post('/carrito', {
-        fkProducto: productoId,
-        cantProducto: cantidad,
-        fkCuentaUser: usuarioId,
-        estatusCarrito: 'ACTIVO'
+        fkproducto: productoId,
+        cantproducto: cantidad,
+        fkcuentauser: usuarioId,
+        estatuscarrito: 'ACTIVO'
       });
       
       await fetchCart();

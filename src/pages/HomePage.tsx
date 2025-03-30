@@ -270,37 +270,37 @@ const HomePage: React.FC = () => {
       <div className="container mx-auto px-4 py-0">
         {/* Categorías Destacadas en forma de iconos */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 mb-12">
-          <Link to="/productos/computadoras" className="flex flex-col items-center">
+          <Link to="/productos/1" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fas fa-desktop text-4xl text-[#1a3870]"></i>
             </div>
             <span className="text-center font-medium">Computadoras</span>
           </Link>
-          <Link to="/productos/electrodomesticos" className="flex flex-col items-center">
+          <Link to="/productos/17" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fas fa-blender text-4xl text-[#1a3870]"></i>
             </div>
             <span className="text-center font-medium">Línea Blanca</span>
           </Link>
-          <Link to="/productos/apple" className="flex flex-col items-center">
+          <Link to="/productos/13" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fab fa-apple text-4xl text-[#1a3870]"></i>
             </div>
-            <span className="text-center font-medium">Apple</span>
+            <span className="text-center font-medium">Celulares</span>
           </Link>
-          <Link to="/productos/imagenes-sonido" className="flex flex-col items-center">
+          <Link to="/productos/16" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fas fa-tv text-4xl text-[#1a3870]"></i>
             </div>
-            <span className="text-center font-medium">Imágenes y Sonido</span>
+            <span className="text-center font-medium">Sonido</span>
           </Link>
-          <Link to="/productos/impresoras" className="flex flex-col items-center">
+          <Link to="/productos/6" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fas fa-print text-4xl text-[#1a3870]"></i>
             </div>
             <span className="text-center font-medium">Impresoras</span>
           </Link>
-          <Link to="/productos/oficinas" className="flex flex-col items-center">
+          <Link to="/productos/20" className="flex flex-col items-center">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center mb-2">
               <i className="fas fa-briefcase text-4xl text-[#1a3870]"></i>
             </div>

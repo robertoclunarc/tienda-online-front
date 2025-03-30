@@ -9,7 +9,7 @@ interface AuthContextProps {
   error: string | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (userData: { nombreUser: string; emailUser: string; tlfUser: string; passw: string }) => Promise<void>;
+  register: (userData: { nombreuser: string; emailuser: string; tlfuser: string; passw: string }) => Promise<void>;
   logout: () => void;
   updateProfile: (userData: Partial<Usuario>) => Promise<void>;
 }
@@ -74,7 +74,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       const { token, user } = response.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('userId', user.idCuentaUser.toString());
+      localStorage.setItem('userId', user.idcuentauser.toString());
       
       setUser(user);
       setIsAuthenticated(true);
@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Registrar usuario
-  const register = async (userData: { nombreUser: string; emailUser: string; tlfUser: string; passw: string }) => {
+  const register = async (userData: { nombreuser: string; emailuser: string; tlfuser: string; passw: string }) => {
     try {
       setLoading(true);
       // Simulación: En una app real, llamaríamos a la API de registro
