@@ -97,14 +97,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // Simulación: En una app real, llamaríamos a la API de registro
       const response = await api.post('/auth/register', userData);
       
-      const { token, user } = response.data;
+      const { token, user, message } = response.data;
       localStorage.setItem('token', token);
-      localStorage.setItem('userId', user.idCuentaUser.toString());
+      localStorage.setItem('userId', user.idcuentauser.toString());
       
       setUser(user);
       setIsAuthenticated(true);
       setError(null);
-      toast.success('Registro exitoso');
+      toast.success(message || 'Registro exitoso');
     } catch (err) {
       setUser(null);
       setIsAuthenticated(false);
